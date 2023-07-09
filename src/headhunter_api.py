@@ -15,8 +15,9 @@ class HeadHunterAPI(Engine):
         self.params = {
             "per_page": 100,
             "page": None,
-            "text": key,
-            "archived": False
+            # "text": key,
+            "archived": False,
+            "employer_id": key
         }
         # Тут наша прога
         self.headers = {
@@ -57,35 +58,72 @@ class HeadHunterAPI(Engine):
             if len(page_vacancies) == 0:
                 break
 
-    def get_formatted_vacancies(self):
+
+    def get_form_vac(self):
         """
         метод, добавляющий вакансии в отдельный список formatted_vacancies
         """
+        data = []
+
         formatted_vacancies = []
 
         for vacancy in self.vacancies:
-            formatted_vacancy = {
-                    'api': 'HeadHunter',  # API
-                    'id': vacancy['id'],                               # id вакансии
-                    'employer': vacancy['employer']['name'],    # название компании
-                    'title': vacancy['name'],                   # профессия
-                    'url': vacancy['alternate_url'],            # ссылка на вакансию
-                    "experience": vacancy["experience"]["name"],    # Опыт
-                    'area': vacancy["area"]["name"],                # место работы, локация
-                    "type_of_work": vacancy["employment"]['name']   # полный/ неполный раб день
-            }
-            salary = vacancy['salary']
-            if salary:
-                if salary['from'] != 'null' or salary['to'] != 'null':
-                    formatted_vacancy['salary_from'] = salary['from']  # ЗП от
-                    formatted_vacancy['salary_to'] = salary['to']  # ЗП до
-                    formatted_vacancy['currency'] = salary['currency']  # валюта
-            else:
-                formatted_vacancy['salary_from'] = 0    # ЗП от
-                formatted_vacancy['salary_to'] = 0      # ЗП до
-                formatted_vacancy['currency'] = None        # валюта
 
+            if vacancy['salary'] is not None:
+                salary_from = vacancy['salary']['from']
+                salary_to = vacancy['salary']['to']
+                salary_currency = vacancy['salary']['currency']
+            else:
+                salary_from = None
+                salary_to = None
+                salary_currency = None
+
+            if vacancy['address'] is not None:  # or vacancy['address'] != 'null':
+                address_raw = vacancy['address']['raw']
+            else:
+                address_raw = None
+
+            if vacancy['department'] is not None:
+                department_name = vacancy['department']['name']
+            else:
+                department_name = None
+
+            formatted_vacancy = {
+                'id': vacancy['id'],
+                'premium': vacancy['premium'],
+                'name': vacancy['name'],
+                'department_name': department_name,
+                'has_test': vacancy['has_test'],
+                'area_id': vacancy['area']['id'],
+                'area_name': vacancy['area']['name'],
+                'salary_from': salary_from,
+                'salary_to': salary_to,
+                'salary_currency': salary_currency,
+                'type_name': vacancy['type']['name'],
+                'address_raw': address_raw,
+                'response_url': vacancy['response_url'],
+                'published_at': vacancy['published_at'],
+                'created_at': vacancy['created_at'],
+                'archived': vacancy['archived'],
+                'apply_alternate_url': vacancy['apply_alternate_url'],
+                'insider_interview': vacancy['insider_interview'],
+                'url': vacancy['url'],
+                'alternate_url': vacancy['alternate_url'],
+                'employer_id': vacancy['employer']['id'],
+                'employer_name': vacancy['employer']['name'],
+                'snippet_requirement': vacancy['snippet']['requirement'],
+                'snippet_responsibility': vacancy['snippet']['responsibility'],
+                'contacts': vacancy['contacts'],
+                'employer_url': vacancy['employer']['url'],
+                'employer_alternate_url': vacancy['employer']['alternate_url'],
+                'schedule_name': vacancy['working_days'],
+                'working_time_intervals': vacancy['working_time_intervals'],
+                'working_time_modes': vacancy['working_time_modes'],
+                'accept_temporary': vacancy['accept_temporary'],
+                'experience': vacancy['experience']
+            }
             formatted_vacancies.append(formatted_vacancy)
             formatted_vacancy = {}
+            data.append(formatted_vacancies)
 
         return formatted_vacancies

@@ -1,54 +1,54 @@
 from src.headhunter_api import HeadHunterAPI
-from src.json_dump import JSONDumpLoad
-from src.connector import Connector
-from src.vacancy import Vacancy
+from config import config
+from src.utils import create_database, save_data_to_database
+from config import config
 
 
 def main():
-
     vacancies_json = []
-    user_keyword = input("Введите ключевое слова для поиска\n")
-    # user_keyword = "Python"
-    user_employee = ['', '', '', '', '', '', '', '', '', '',]
+    data = []
+    user_employee = [
+         ['80', 'Альфа-Банк'],
+         ['370', 'АльфаСтрахование'],
+         ['402', 'Компания ТрансТелеКом'],
+         ['733', 'ЛАНИТ'],
+         ['882', '1С'],
+         ['2523', 'М.Видео-Эльдорадо'],
+         ['407', 'Гарант'],
+         ['490', 'Ренессанс cтрахование, Группа'],
+         ['2748', 'Ростелеком'],
+         ['2808', 'Открытые Технологии']
+    ]
 
-    # Создание экземпляра класса для работы с API сайтов с вакансиями
-    hh_api = HeadHunterAPI(user_keyword)
+    for employee in user_employee:
+        print(f'id Работадателя - {employee[0]}, Название Работадателя - {employee[1]}\n')
+        for element in employee:
 
-    # choice_api = input('Выберите с какого сайта необходимо собрать вакансии.\n'
-    #                 '1.HeadHunter\n'
-    #                 '2.SuperJobAPI\n'
-    #                 '3.Со всех\n'
-    #                 'Укажите номер пункта: ')
+            # Создание экземпляра класса для работы с API сайтов с вакансиями
+            hh_api = HeadHunterAPI(element)
 
-    pages = input('количество страниц')
-    # pages = 20  # количество страниц
+            pages = int(input('Введите количество страниц для загрузки по каждому работадателю\n'
+                              '0-20\n'))
 
-    while True:
-        hh_api.get_vacancies(pages)
-        vacancies_json.extend(hh_api.get_formatted_vacancies())
-        break
-
-    connector = Connector(user_keyword=user_keyword, vacancies_json=vacancies_json)
-    vacancies = connector.select()
-
-    while True:
-        command = input(
-            '1 - Вывести список вакансий\n'
-            'exit - Выход\n'
-            '>>> '
-        )
-        if command.lower() == 'exit':
+            while True:
+                hh_api.get_vacancies(pages)
+                vacancies_json.extend(hh_api.get_form_vac())
+                break
             break
-        elif command == '1':
-            vacancies = connector.select()
 
-        # elif command == '2':
-        #     vacancies = connector.sort_by_salary()
-        # elif command == '3':
-        #     vacancies = connector.area_sort()
+        data.append({
+            'ID': employee[0],
+            'vacancies': vacancies_json
+        })
+        vacancies_json = []
 
-        for vacc in vacancies:
-            print(vacc, end='\n')
+    params = config()
+    print('Создание бд...')
+    create_database('youtube', params)
+
+    print('Заполнение бд данными...')
+    save_data_to_database(data, 'youtube', params)
+
 
 if __name__ == "__main__":
     main()
