@@ -5,9 +5,9 @@ class DBManager:
 
     def __init__(self, database_name: str, params: dict):
         conn = psycopg2.connect(database_name='postgres', **params)
-        self._db_name = conn['host']
-        self._user = conn[1]
-        self._password = conn[2]
+        # self._db_name = conn['host']
+        # self._user = conn[1]
+        # self._password = conn[2]
         # cur = conn.cursor()
         # conn.cursor.execute(query)
 
@@ -20,12 +20,13 @@ class DBManager:
 
     def get_companies_and_vacancies_count(self):
         """получает список всех компаний и количество вакансий у каждой компании."""
-        query = """SELECT e.company_name,
-                                  count(v.vacancy_id) as num_vacancies
-                           FROM employers e 
-                           FULL JOIN vacancies v on v.employer_id = e.employer_id
-                           GROUP BY e.company_name"""
-        self.connect(query)
+        # query = """SELECT e.company_name,
+        #                           count(v.vacancy_id) as num_vacancies
+        #                    FROM employers e
+        #                    FULL JOIN vacancies v on v.employer_id = e.employer_id
+        #                    GROUP BY e.company_name"""
+        # self.connect(query)
+        print('hui')
 
 
     def get_all_vacancies(self):

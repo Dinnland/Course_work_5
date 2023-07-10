@@ -58,7 +58,6 @@ class HeadHunterAPI(Engine):
             if len(page_vacancies) == 0:
                 break
 
-
     def get_form_vac(self):
         """
         метод, добавляющий вакансии в отдельный список formatted_vacancies
