@@ -2,6 +2,7 @@ from typing import Any
 import psycopg2
 
 
+
 def create_database(database_name: str, params: dict) -> None:
     """
     Создание базы данных и таблиц для сохранения данных
@@ -16,6 +17,7 @@ def create_database(database_name: str, params: dict) -> None:
     # Проверка наличия базы данных
     cur.execute(f"SELECT 1 FROM pg_catalog.pg_database WHERE datname='{database_name}'")
     result = cur.fetchone()
+
 
     # Если база данных существует, выполняем операцию DROP DATABASE
     if result:
@@ -44,6 +46,7 @@ def create_database(database_name: str, params: dict) -> None:
              CREATE TABLE vacancies(
                 vacancy_id INT UNIQUE,
                 employer_id INT references employers(employer_id) NOT NULL,
+                employer_name VARCHAR NOT NULl,
                 vacancy_name VARCHAR,
                 requirement VARCHAR,
                 responsibility VARCHAR,
@@ -99,11 +102,11 @@ def save_data_to_database(data: list[dict[str, Any]], database_name: str, params
                         # Внесение данных в таблицу vacancies(ВАКАНСИИ) из ранее загруженных вакансий по работадателю
                     cur.execute(
                         """
-                        INSERT INTO vacancies (vacancy_id, employer_id, vacancy_name, requirement, responsibility,
+                        INSERT INTO vacancies (vacancy_id, employer_id, vacancy_name, employer_name, requirement, responsibility,
                         salary_from, salary_to, salary_currency, url, area_id, area_name, experience, department_name)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """,
-                        (vacancy_info['id'], vacancy_info['employer_id'], vacancy_info['name'],
+                        (vacancy_info['id'], vacancy_info['employer_id'], vacancy_info['name'], vacancy_info['employer_name'],
                          vacancy_info['snippet_requirement'], vacancy_info['snippet_responsibility'],
                          vacancy_info['salary_from'], vacancy_info['salary_to'], vacancy_info['salary_currency'],
                          vacancy_info['alternate_url'], vacancy_info['area_id'], vacancy_info['area_name'],

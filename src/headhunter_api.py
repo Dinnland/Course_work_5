@@ -15,7 +15,6 @@ class HeadHunterAPI(Engine):
         self.params = {
             "per_page": 100,
             "page": None,
-            # "text": key,
             "archived": False,
             "employer_id": key
         }

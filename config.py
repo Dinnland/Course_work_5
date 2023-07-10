@@ -1,9 +1,13 @@
 from configparser import ConfigParser
 
+# абсолютный путь к database.ini
+file_exp = "F:/python projects/Course_work_5_postgreSQL/database.ini"
 
-def config(filename="C:/Users/User/PycharmProjects/Course_work_5_postgreSQL/database.ini", section="postgresql"):
+
+def config(filename=file_exp, section="postgresql"):
     # create a parser
     parser = ConfigParser()
+
     # read config file
     parser.read(filename)
     db = {}
