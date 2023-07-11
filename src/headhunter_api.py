@@ -62,7 +62,6 @@ class HeadHunterAPI(Engine):
         метод, добавляющий вакансии в отдельный список formatted_vacancies
         """
         data = []
-
         formatted_vacancies = []
 
         for vacancy in self.vacancies:
@@ -123,5 +122,4 @@ class HeadHunterAPI(Engine):
             formatted_vacancies.append(formatted_vacancy)
             formatted_vacancy = {}
             data.append(formatted_vacancies)
-
         return formatted_vacancies

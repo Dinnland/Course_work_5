@@ -2,7 +2,6 @@ from typing import Any
 import psycopg2
 
 
-
 def create_database(database_name: str, params: dict) -> None:
     """
     Создание базы данных и таблиц для сохранения данных
@@ -18,10 +17,10 @@ def create_database(database_name: str, params: dict) -> None:
     cur.execute(f"SELECT 1 FROM pg_catalog.pg_database WHERE datname='{database_name}'")
     result = cur.fetchone()
 
-
     # Если база данных существует, выполняем операцию DROP DATABASE
     if result:
         cur.execute(f"DROP DATABASE {database_name}")
+
     # Создание базы данных
     cur.execute(f"CREATE DATABASE {database_name}")
     conn.close()
@@ -60,7 +59,6 @@ def create_database(database_name: str, params: dict) -> None:
                 department_name VARCHAR
                  )
         """)
-
     conn.commit()
     conn.close()
 

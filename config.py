@@ -1,6 +1,6 @@
 from configparser import ConfigParser
-
-# абсолютный путь к database.ini
+# файл конфигурации
+# Тут необходимо указать абсолютный путь к database.ini
 file_exp = "F:/python projects/Course_work_5_postgreSQL/database.ini"
 
 
